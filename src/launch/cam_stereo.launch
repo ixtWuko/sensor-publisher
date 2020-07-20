@@ -1,0 +1,4 @@
+<launch>
+  <node name="cam_1" pkg="sensor_publisher" type="cam_pub_1" output="screen" > </node>
+  <node name="cam_2" pkg="sensor_publisher" type="cam_pub_2" output="screen" > </node>
+</launch>
