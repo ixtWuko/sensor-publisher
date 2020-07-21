@@ -121,7 +121,7 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
+  include
   ${catkin_INCLUDE_DIRS}
   ${OpenCV_INCLUDE_DIRS}
   ${WIRINGPI_INCLUDE_DIRS}
@@ -143,7 +143,7 @@ include_directories(
 # add_executable(${PROJECT_NAME}_node src/sensor-publisher_node.cpp)
 add_executable(cam_pub_1 src/cam_pub_1.cc)
 add_executable(cam_pub_2 src/cam_pub_2.cc)
-add_executable(imu_pub src/imu_pub.cc include/mpu6050.cc)
+add_executable(imu_pub src/imu_pub.cc include/MPU6050.cc)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
