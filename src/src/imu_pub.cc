@@ -14,8 +14,8 @@ int main(int argc, char **argv)
     imu.initialize(
         9, // sample rate = 100Hz
         MPU6050_DLPF_BW_20,
-        MPU6050_GYRO_FS_500DPS,
-        MPU6050_ACCEL_FS_2G,
+        MPU6050_GYRO_FS_1000DPS,
+        MPU6050_ACCEL_FS_4G,
         0x01
     );
 
