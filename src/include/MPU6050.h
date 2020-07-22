@@ -211,11 +211,11 @@ public:
     void setFullScaleAccelRange(uint8_t);
 
     void getAccelRawData(int16_t *, int16_t *, int16_t *);
-    void getAccelData(float *, float *, float *);
+    void getAccelData(double *, double *, double *);
     void getGyroRawData(int16_t *, int16_t *, int16_t *);
-    void getGyroData(float *, float *, float *);
+    void getGyroData(double *, double *, double *);
     void getTempRawData(int16_t *);
-    void getTempData(float *);
+    void getTempData(double *);
 
     void resetGyroSignalPath();
     void resetAccelSignalPath();
@@ -239,7 +239,7 @@ public:
     uint8_t getClockSource();
     void setClockSource(uint8_t);
 
-    void selfTest(uint8_t, uint8_t, float *);
+    void selfTest(uint8_t, uint8_t, double *);
     void initialize(uint8_t, uint8_t, uint8_t, uint8_t, uint8_t);
 
 private:
@@ -251,8 +251,8 @@ private:
      * modified in @setFullScaleGyroRange(), @setFullScaleAccelRange()
      * used in @getGyroData(), @getAccelData()
      */
-    float gyro_sensitivity;
-    float accel_sensitivity;
+    double gyro_sensitivity;
+    double accel_sensitivity;
 };
 
 #endif // _MPU6050_H_

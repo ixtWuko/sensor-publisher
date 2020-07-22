@@ -198,14 +198,24 @@ void MPU6050_SENSOR::getAccelRawData(int16_t *xa, int16_t *ya, int16_t *za)
     *za <<= 8;
     *za |= wiringPiI2CReadReg8(file_handle, MPU6050_RA_ACCEL_ZOUT_L);
 }
-void MPU6050_SENSOR::getAccelData(float *xa, float *ya, float *za)
+void MPU6050_SENSOR::getAccelData(double *xa, double *ya, double *za)
 {
     int16_t xa_raw, ya_raw, za_raw;
-    getAccelRawData(&xa_raw, &ya_raw, &za_raw);
+    xa_raw = wiringPiI2CReadReg8(file_handle, MPU6050_RA_ACCEL_XOUT_H);
+    xa_raw <<= 8;
+    xa_raw |= wiringPiI2CReadReg8(file_handle, MPU6050_RA_ACCEL_XOUT_L);
 
-    *xa = (float)xa_raw / accel_sensitivity * GRAVITY;
-    *ya = (float)ya_raw / accel_sensitivity * GRAVITY;
-    *za = (float)za_raw / accel_sensitivity * GRAVITY;
+    ya_raw = wiringPiI2CReadReg8(file_handle, MPU6050_RA_ACCEL_YOUT_H);
+    ya_raw <<= 8;
+    ya_raw |= wiringPiI2CReadReg8(file_handle, MPU6050_RA_ACCEL_YOUT_L);
+
+    za_raw = wiringPiI2CReadReg8(file_handle, MPU6050_RA_ACCEL_ZOUT_H);
+    za_raw <<= 8;
+    za_raw |= wiringPiI2CReadReg8(file_handle, MPU6050_RA_ACCEL_ZOUT_L);
+
+    *xa = (double)xa_raw / accel_sensitivity * GRAVITY;
+    *ya = (double)ya_raw / accel_sensitivity * GRAVITY;
+    *za = (double)za_raw / accel_sensitivity * GRAVITY;
 }
 
 /* gyroscope output  陀螺仪输出
@@ -225,14 +235,24 @@ void MPU6050_SENSOR::getGyroRawData(int16_t *xg, int16_t *yg, int16_t *zg)
     *zg <<= 8;
     *zg |= wiringPiI2CReadReg8(file_handle, MPU6050_RA_GYRO_ZOUT_L);
 }
-void MPU6050_SENSOR::getGyroData(float *xg, float *yg, float *zg)
+void MPU6050_SENSOR::getGyroData(double *xg, double *yg, double *zg)
 {
     int16_t xg_raw, yg_raw, zg_raw;
-    getGyroRawData(&xg_raw, &yg_raw, &zg_raw);
+    xg_raw = wiringPiI2CReadReg8(file_handle, MPU6050_RA_GYRO_XOUT_H);
+    xg_raw <<= 8;
+    xg_raw |= wiringPiI2CReadReg8(file_handle, MPU6050_RA_GYRO_XOUT_L);
 
-    *xg = (float)xg_raw / gyro_sensitivity;
-    *yg = (float)yg_raw / gyro_sensitivity;
-    *zg = (float)zg_raw / gyro_sensitivity;
+    yg_raw = wiringPiI2CReadReg8(file_handle, MPU6050_RA_GYRO_YOUT_H);
+    yg_raw <<= 8;
+    yg_raw |= wiringPiI2CReadReg8(file_handle, MPU6050_RA_GYRO_YOUT_L);
+
+    zg_raw = wiringPiI2CReadReg8(file_handle, MPU6050_RA_GYRO_ZOUT_H);
+    zg_raw <<= 8;
+    zg_raw |= wiringPiI2CReadReg8(file_handle, MPU6050_RA_GYRO_ZOUT_L);
+
+    *xg = (double)xg_raw / gyro_sensitivity;
+    *yg = (double)yg_raw / gyro_sensitivity;
+    *zg = (double)zg_raw / gyro_sensitivity;
 }
 
 /* temperature output  温度输出
@@ -244,12 +264,14 @@ void MPU6050_SENSOR::getTempRawData(int16_t *temp)
     *temp <<= 8;
     *temp |= wiringPiI2CReadReg8(file_handle, MPU6050_RA_TEMP_OUT_L);
 }
-void MPU6050_SENSOR::getTempData(float *temp)
+void MPU6050_SENSOR::getTempData(double *temp)
 {
     // 根据 MPU6050 的数据手册
     int16_t raw;
-    getTempRawData(&raw);
-    *temp = (float)raw / 340.0 + 36.53;
+    raw = wiringPiI2CReadReg8(file_handle, MPU6050_RA_TEMP_OUT_H);
+    raw <<= 8;
+    raw |= wiringPiI2CReadReg8(file_handle, MPU6050_RA_TEMP_OUT_L);
+    *temp = (double)raw / 340.0 + 36.53;
 }
 
 /* reset gyroscope signal path  重置陀螺仪
@@ -397,7 +419,7 @@ void MPU6050_SENSOR::setClockSource(uint8_t source)
  *
  *
  */
-void MPU6050_SENSOR::selfTest(uint8_t gyro_range, uint8_t accel_range, float *differences)
+void MPU6050_SENSOR::selfTest(uint8_t gyro_range, uint8_t accel_range, double *differences)
 {
     uint8_t raw[4];
     uint8_t self_test_response[6];
@@ -429,18 +451,18 @@ void MPU6050_SENSOR::selfTest(uint8_t gyro_range, uint8_t accel_range, float *di
     self_test_response[5] = ((raw[2] & 0xE0) >> 3) | (raw[4] & 0x03);
 
     // 计算 factory trim, 参考 MPU6050 寄存器手册
-    float factory_trim[6];
-    factory_trim[0] = 25.0 * gyro_sensitivity * pow(1.046, ((float)self_test_response[0] - 1.0));
-    factory_trim[1] = -25.0 * gyro_sensitivity * pow(1.046, ((float)self_test_response[1] - 1.0));
-    factory_trim[2] = 25.0 * gyro_sensitivity * pow(1.046, ((float)self_test_response[2] - 1.0));
-    factory_trim[3] = 0.34 * accel_sensitivity * pow((0.92 / 0.34), (((float)self_test_response[3] - 1.0) / 30.0));
-    factory_trim[4] = 0.34 * accel_sensitivity * pow((0.92 / 0.34), (((float)self_test_response[4] - 1.0) / 30.0));
-    factory_trim[5] = 0.34 * accel_sensitivity * pow((0.92 / 0.34), (((float)self_test_response[5] - 1.0) / 30.0));
+    double factory_trim[6];
+    factory_trim[0] = 25.0 * gyro_sensitivity * pow(1.046, ((double)self_test_response[0] - 1.0));
+    factory_trim[1] = -25.0 * gyro_sensitivity * pow(1.046, ((double)self_test_response[1] - 1.0));
+    factory_trim[2] = 25.0 * gyro_sensitivity * pow(1.046, ((double)self_test_response[2] - 1.0));
+    factory_trim[3] = 0.34 * accel_sensitivity * pow((0.92 / 0.34), (((double)self_test_response[3] - 1.0) / 30.0));
+    factory_trim[4] = 0.34 * accel_sensitivity * pow((0.92 / 0.34), (((double)self_test_response[4] - 1.0) / 30.0));
+    factory_trim[5] = 0.34 * accel_sensitivity * pow((0.92 / 0.34), (((double)self_test_response[5] - 1.0) / 30.0));
 
     // 计算百分比
     for (int i = 0; i < 6; ++i)
     {
-        differences[i] = ((float)self_test_response[i] - factory_trim[i]) / factory_trim[i] * 100.0 + 100.0;
+        differences[i] = ((double)self_test_response[i] - factory_trim[i]) / factory_trim[i] * 100.0 + 100.0;
     }
 }
 

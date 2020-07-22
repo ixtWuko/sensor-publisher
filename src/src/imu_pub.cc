@@ -4,8 +4,6 @@
 #include <sensor_msgs/Imu.h>
 #include "MPU6050.h"
 
-#define PI 3.1415926535
-
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "imu_pub");
@@ -21,8 +19,9 @@ int main(int argc, char **argv)
         0x01
     );
 
-    float xa, ya, za;
-    float xg, yg, zg;
+    double xa, ya, za;
+    double xg, yg, zg;
+    const double PI_DIVIDE_180 = 0.017453292519943295;
     sensor_msgs::Imu data;
 
     ros::Rate loop_rate(100);
@@ -35,11 +34,11 @@ int main(int argc, char **argv)
         data.linear_acceleration.x = xa;
         data.linear_acceleration.y = ya;
         data.linear_acceleration.z = za;
-        data.linear_acceleration_covariance[0] = -1.0;
-        data.angular_velocity.x = xg / 180 * PI;
-        data.angular_velocity.y = yg / 180 * PI;
-        data.angular_velocity.z = zg / 180 * PI;
-        data.angular_velocity_covariance[0] = -1.0;
+        // data.linear_acceleration_covariance[0] = -1.0;
+        data.angular_velocity.x = xg * PI_DIVIDE_180;
+        data.angular_velocity.y = yg * PI_DIVIDE_180;
+        data.angular_velocity.z = zg * PI_DIVIDE_180;
+        // data.angular_velocity_covariance[0] = -1.0;
         pub.publish(data);
         loop_rate.sleep();
     }
