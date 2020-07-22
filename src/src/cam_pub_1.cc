@@ -25,7 +25,7 @@ int main(int argc, char **argv) {
     cvi.encoding = "bgr8";
     cvi.header.frame_id = "cam_1_frame";
 
-    ros::Rate loop_rate(20);
+    ros::Rate loop_rate(30);
     while(nh.ok()) {
         cvi.header.stamp = ros::Time::now();
         cap.read(cvi.image);
