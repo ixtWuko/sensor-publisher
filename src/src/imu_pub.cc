@@ -19,25 +19,24 @@ int main(int argc, char **argv)
         0x01
     );
 
-    double xa, ya, za;
-    double xg, yg, zg;
-    const double PI_DIVIDE_180 = 0.017453292519943295;
     sensor_msgs::Imu data;
+    data.header.frame_id = "imu_frame";
 
     ros::Rate loop_rate(100);
     while (ros::ok)
     {
         data.header.stamp = ros::Time::now();
-        imu.getAccelData(&xa, &ya, &za);
-        imu.getGyroData(&xg, &yg, &zg);
-        data.header.frame_id = "imu_frame";
-        data.linear_acceleration.x = xa;
-        data.linear_acceleration.y = ya;
-        data.linear_acceleration.z = za;
+        imu.getAccelData(
+	    &(data.linear_acceleration.x),
+	    &(data.linear_acceleration.y),
+	    &(data.linear_acceleration.z)
+	);
+        imu.getGyroData(
+            &(data.angular_velocity.x),
+	    &(data.angular_velocity.y),
+	    &(data.angular_velocity.z)
+	);
         // data.linear_acceleration_covariance[0] = -1.0;
-        data.angular_velocity.x = xg * PI_DIVIDE_180;
-        data.angular_velocity.y = yg * PI_DIVIDE_180;
-        data.angular_velocity.z = zg * PI_DIVIDE_180;
         // data.angular_velocity_covariance[0] = -1.0;
         pub.publish(data);
         loop_rate.sleep();
