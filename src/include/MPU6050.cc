@@ -235,7 +235,7 @@ void MPU6050_SENSOR::getGyroRawData(int16_t *xg, int16_t *yg, int16_t *zg)
     *zg <<= 8;
     *zg |= wiringPiI2CReadReg8(file_handle, MPU6050_RA_GYRO_ZOUT_L);
 }
-void MPU6050_SENSOR::getGyroData(double *xg, double *yg, double *zg)
+void MPU6050_SENSOR::getGyroDataDeg(double *xg, double *yg, double *zg)
 {
     int16_t xg_raw, yg_raw, zg_raw;
     xg_raw = wiringPiI2CReadReg8(file_handle, MPU6050_RA_GYRO_XOUT_H);
@@ -253,6 +253,26 @@ void MPU6050_SENSOR::getGyroData(double *xg, double *yg, double *zg)
     *xg = (double)xg_raw / gyro_sensitivity;
     *yg = (double)yg_raw / gyro_sensitivity;
     *zg = (double)zg_raw / gyro_sensitivity;
+}
+void MPU6050_SENSOR::getGyroDataRad(double *xg, double *yg, double *zg)
+{
+    int16_t xg_raw, yg_raw, zg_raw;
+    xg_raw = wiringPiI2CReadReg8(file_handle, MPU6050_RA_GYRO_XOUT_H);
+    xg_raw <<= 8;
+    xg_raw |= wiringPiI2CReadReg8(file_handle, MPU6050_RA_GYRO_XOUT_L);
+
+    yg_raw = wiringPiI2CReadReg8(file_handle, MPU6050_RA_GYRO_YOUT_H);
+    yg_raw <<= 8;
+    yg_raw |= wiringPiI2CReadReg8(file_handle, MPU6050_RA_GYRO_YOUT_L);
+
+    zg_raw = wiringPiI2CReadReg8(file_handle, MPU6050_RA_GYRO_ZOUT_H);
+    zg_raw <<= 8;
+    zg_raw |= wiringPiI2CReadReg8(file_handle, MPU6050_RA_GYRO_ZOUT_L);
+
+    const double PI_DIVIDE_180 = 0.017453292519943295;
+    *xg = (double)xg_raw / gyro_sensitivity * PI_DIVIDE_180;
+    *yg = (double)yg_raw / gyro_sensitivity * PI_DIVIDE_180;
+    *zg = (double)zg_raw / gyro_sensitivity * PI_DIVIDE_180;
 }
 
 /* temperature output  温度输出

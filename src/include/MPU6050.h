@@ -213,7 +213,8 @@ public:
     void getAccelRawData(int16_t *, int16_t *, int16_t *);
     void getAccelData(double *, double *, double *);
     void getGyroRawData(int16_t *, int16_t *, int16_t *);
-    void getGyroData(double *, double *, double *);
+    void getGyroDataDeg(double *, double *, double *);
+    void getGyroDataRad(double *, double *, double *);
     void getTempRawData(int16_t *);
     void getTempData(double *);
 

@@ -27,15 +27,15 @@ int main(int argc, char **argv)
     {
         data.header.stamp = ros::Time::now();
         imu.getAccelData(
-	    &(data.linear_acceleration.x),
-	    &(data.linear_acceleration.y),
-	    &(data.linear_acceleration.z)
-	);
-        imu.getGyroData(
+            &(data.linear_acceleration.x),
+            &(data.linear_acceleration.y),
+            &(data.linear_acceleration.z)
+        );
+        imu.getGyroDataRad(
             &(data.angular_velocity.x),
-	    &(data.angular_velocity.y),
-	    &(data.angular_velocity.z)
-	);
+            &(data.angular_velocity.y),
+            &(data.angular_velocity.z)
+        );
         // data.linear_acceleration_covariance[0] = -1.0;
         // data.angular_velocity_covariance[0] = -1.0;
         pub.publish(data);
