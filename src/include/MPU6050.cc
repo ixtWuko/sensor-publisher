@@ -77,8 +77,8 @@ uint8_t MPU6050_SENSOR::getDLPFConfig()
 }
 void MPU6050_SENSOR::setDLPFConfig(uint8_t config)
 {
-    // 只更改低三位的值
-    uint8_t whole_byte = wiringPiI2CReadReg8(file_handle, MPU6050_RA_CONFIG) & 0xF8 | config;
+    // 只更改低三位的值。设置外部同步为TEMP
+    uint8_t whole_byte = wiringPiI2CReadReg8(file_handle, MPU6050_RA_CONFIG) & 0xF8 | config | 0x40;
     wiringPiI2CWriteReg8(file_handle, MPU6050_RA_CONFIG, whole_byte);
 }
 
@@ -500,15 +500,15 @@ void MPU6050_SENSOR::initialize(
     // 必须唤醒设备才能进行设置
     setWake();
     delay(100);
-    // 设置低通滤波器
-    setDLPFConfig(dlpf_config);
+    // 时钟源
+    setClockSource(clock_source);
     // 设置采样率
     setSampleRate(sample_rate);
+    // 设置低通滤波器
+    setDLPFConfig(dlpf_config);
     // 设置陀螺仪、加速度计量程
     setFullScaleGyroRange(gyro_range);
     setFullScaleAccelRange(accel_range);
-    // 时钟源
-    setClockSource(clock_source);
     // 关闭FIFO
-    setFIFODisabled();
+    //setFIFODisabled();
 }

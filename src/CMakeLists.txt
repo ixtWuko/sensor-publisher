@@ -161,7 +161,7 @@ add_executable(imu_pub src/imu_pub.cc include/MPU6050.cc)
 # )
 target_link_libraries(cam_pub_1 ${catkin_LIBRARIES} ${OpenCV_LIBS})
 target_link_libraries(cam_pub_2 ${catkin_LIBRARIES} ${OpenCV_LIBS})
-target_link_libraries(imu_pub ${catkin_LIBRARIES} ${WIRINGPI_LIBRARIES} -lrt)
+target_link_libraries(imu_pub ${catkin_LIBRARIES} bcm2835 ${WIRINGPI_LIBRARIES} -lrt)
 
 #############
 ## Install ##
