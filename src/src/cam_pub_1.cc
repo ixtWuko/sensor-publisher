@@ -15,6 +15,7 @@ int main(int argc, char **argv) {
     cv::VideoCapture cap(0);
     cap.set(cv::CAP_PROP_FRAME_WIDTH,  640);
     cap.set(cv::CAP_PROP_FRAME_HEIGHT, 480);
+    cap.set(cv::CAP_PROP_FPS, 30);
     //cap.set(cv::CAP_PROP_AUTO_EXPOSURE, 2);
     //cap.set(cv::CAP_PROP_EXPOSURE, 6)
 
@@ -29,10 +30,10 @@ int main(int argc, char **argv) {
     while(nh.ok()) {
         cvi.header.stamp = ros::Time::now();
         cap.read(cvi.image);
-        if (!cvi.image.empty())
-        {
+        //if (!cvi.image.empty())
+        //{
             pub.publish(cvi.toImageMsg());
-        }
+        //}
         loop_rate.sleep();
     }
     return 0;

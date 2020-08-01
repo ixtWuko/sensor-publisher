@@ -13,6 +13,7 @@ add_compile_options(-std=c++11)
 find_package(catkin REQUIRED
     roscpp
     sensor_msgs
+    eigen_conversions
     image_transport
     cv_bridge
 )
@@ -21,6 +22,7 @@ find_package(catkin REQUIRED
 # find_package(Boost REQUIRED COMPONENTS system)
 find_package(OpenCV REQUIRED)
 find_package(WiringPi REQUIRED)
+set(Eigen_INCLUDE_DIRS /usr/include/eigen3/)
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
@@ -124,6 +126,7 @@ include_directories(
   include
   ${catkin_INCLUDE_DIRS}
   ${OpenCV_INCLUDE_DIRS}
+  ${Eigen_INCLUDE_DIRS}
   ${WIRINGPI_INCLUDE_DIRS}
 )
 
@@ -144,6 +147,7 @@ include_directories(
 add_executable(cam_pub_1 src/cam_pub_1.cc)
 add_executable(cam_pub_2 src/cam_pub_2.cc)
 add_executable(imu_pub src/imu_pub.cc include/MPU6050.cc)
+add_executable(imu_pub_mod src/imu_pub_mod.cc include/MPU6050.cc)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -162,6 +166,7 @@ add_executable(imu_pub src/imu_pub.cc include/MPU6050.cc)
 target_link_libraries(cam_pub_1 ${catkin_LIBRARIES} ${OpenCV_LIBS})
 target_link_libraries(cam_pub_2 ${catkin_LIBRARIES} ${OpenCV_LIBS})
 target_link_libraries(imu_pub ${catkin_LIBRARIES} bcm2835 ${WIRINGPI_LIBRARIES} -lrt)
+target_link_libraries(imu_pub_mod ${catkin_LIBRARIES} bcm2835 ${WIRINGPI_LIBRARIES} -lrt)
 
 #############
 ## Install ##

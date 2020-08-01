@@ -32,10 +32,10 @@ int main(int argc, char **argv)
     {
         cvi.header.stamp = ros::Time::now();
         cap.read(cvi.image);
-        if (!cvi.image.empty())
-        {
+        //if (!cvi.image.empty())
+        //{
             pub.publish(cvi.toImageMsg());
-        }
+        //}
         loop_rate.sleep();
     }
     return 0;

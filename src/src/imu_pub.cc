@@ -18,7 +18,7 @@ int main(int argc, char **argv)
     MPU6050_SENSOR imu(0x68);
     imu.initialize(
         100,
-        MPU6050_DLPF_BW_256,
+        MPU6050_DLPF_BW_42,
         MPU6050_GYRO_FS_1000DPS,
         MPU6050_ACCEL_FS_4G,
         0x01);
